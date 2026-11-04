@@ -6,6 +6,8 @@ MODULE_OBJS := \
 	blit/blit-alpha.o \
 	blit/blit-fast.o \
 	blit/blit-generic.o \
+	blit/blit-lanczos.o \
+	blit/blit-resize.o \
 	blit/blit-scale.o \
 	color_quantizer.o \
 	cursorman.o \

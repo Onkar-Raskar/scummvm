@@ -21,6 +21,7 @@
 
 #include "graphics/managed_surface.h"
 #include "graphics/blit.h"
+#include "graphics/blit/blit-lanczos.h"
 #include "graphics/palette.h"
 #include "graphics/transform_tools.h"
 #include "common/algorithm.h"
@@ -311,7 +312,9 @@ Graphics::ManagedSurface *ManagedSurface::scale(int16 newWidth, int16 newHeight,
 
 	target->create(newWidth, newHeight, format);
 
-	if (filtering) {
+	if (filtering && format.bytesPerPixel == 4) {
+		scaleLanczos((byte *)target->getPixels(), (const byte *)getPixels(), target->pitch, pitch, target->w, target->h, w, h, format);
+	} else if (filtering) {
 		scaleBlitBilinear((byte *)target->getPixels(), (const byte *)getPixels(), target->pitch, pitch, target->w, target->h, w, h, format, flip);
 	} else {
 		scaleBlit((byte *)target->getPixels(), (const byte *)getPixels(), target->pitch, pitch, target->w, target->h, w, h, format, flip);
