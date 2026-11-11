@@ -40,7 +40,7 @@ void ColonyEngine::getWallFace3D(int cellX, int cellY, int direction, float corn
 	const float zBot = -160.0f;
 	const float zTop = 160.0f;
 	// Pull slightly into the cell to prevent z-fighting
-	const float eps = 1.0f;
+	const float eps = 0.0f;
 
 	switch (direction) {
 	case kDirNorth: // Wall at y1 (+Y); viewed from inside (looking North)

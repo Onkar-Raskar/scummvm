@@ -492,7 +492,7 @@ const int kDSinkPts[6][3] = {
 };
 const int kDSinkSurf[1][8] = {{kColorWater, 6, 5, 4, 3, 2, 1, 0}};
 const int kSinkMirrorPts[4][3] = {
-	{-127, 65, 130}, {-127, -65, 130}, {-127, 65, 250}, {-127, -65, 250}
+	{-128, 65, 130}, {-128, -65, 130}, {-128, 65, 250}, {-128, -65, 250}
 };
 const int kSinkMirrorSurf[1][8] = {{kColorSilver, 4, 1, 0, 2, 3, 0, 0}};
 
