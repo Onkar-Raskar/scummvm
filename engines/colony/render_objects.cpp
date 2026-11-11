@@ -492,7 +492,7 @@ const int kDSinkPts[6][3] = {
 };
 const int kDSinkSurf[1][8] = {{kColorWater, 6, 5, 4, 3, 2, 1, 0}};
 const int kSinkMirrorPts[4][3] = {
-	{-128, 65, 130}, {-128, -65, 130}, {-128, 65, 250}, {-128, -65, 250}
+	{-127, 65, 130}, {-127, -65, 130}, {-127, 65, 250}, {-127, -65, 250}
 };
 const int kSinkMirrorSurf[1][8] = {{kColorSilver, 4, 1, 0, 2, 3, 0, 0}};
 
@@ -1970,7 +1970,7 @@ bool ColonyEngine::drawStaticObjectPrisms3D(Thing &obj) {
 	case kObjSink:
 		for (int i = 0; i < 3; i++) {
 			_gfx->setDepthRange((2 - i) * 0.002f, 1.0f);
-			draw3DPrism(obj, kSinkParts[i], false, -1, true, false);
+			draw3DPrism(obj, kSinkParts[i], false, -1, true, i==2);
 		}
 		_gfx->setDepthRange(0.0f, 1.0f);
 		break;
