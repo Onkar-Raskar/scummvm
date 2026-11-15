@@ -794,6 +794,7 @@ private:
 	void battleBackdrop();
 	void battleDrawPyramids();
 	void battleDrawTanks();
+	bool isDoorVisible(const PrismPartDef &doorDef, const Locate &loc) const;
 
 	// PATCH.C: object relocation + wall state persistence
 	void resetObjectSlot(int slot, int type, int xloc, int yloc, uint8 ang);

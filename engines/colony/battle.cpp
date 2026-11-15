@@ -36,6 +36,7 @@
 #include "colony/colony.h"
 #include "colony/renderer.h"
 #include "colony/sound.h"
+#include "colony/render_internal.h"
 
 namespace Colony {
 
@@ -691,6 +692,35 @@ void ColonyEngine::battleDrawPyramids() {
 // =====================================================================
 // battleDrawTanks: Render enemies, entrance, shuttle, projectile.
 // =====================================================================
+bool ColonyEngine::isDoorVisible(const PrismPartDef &doorDef, const Locate &loc) const {
+	const uint8 rotAng = loc.ang + 32;
+	const int32 rotCos = _cost[rotAng];
+	const int32 rotSin = _sint[rotAng];
+	
+	
+	float px[3], py[3], pz[3];
+	for (int i = 0; i < 3; i++) {
+		int pt = doorDef.surfaces[0][i + 2];
+		int ox = doorDef.points[pt][0];
+		int oy = doorDef.points[pt][1];
+		px[i] = (float)(((int32)ox * rotCos - (int32)oy * rotSin) >> 7) + loc.xloc;
+		py[i] = (float)(((int32)ox * rotSin + (int32)oy * rotCos) >> 7) + loc.yloc;
+		pz[i] = (float)(doorDef.points[pt][2] - kFloor);
+	}
+	
+	// find normal
+	float nx = (py[1] - py[0]) * (pz[2] - pz[0]) - (pz[1] - pz[0]) * (py[2] - py[0]);
+	float ny = (pz[1] - pz[0]) * (px[2] - px[0]) - (px[1] - px[0]) * (pz[2] - pz[0]);
+	float nz = (px[1] - px[0]) * (py[2] - py[0]) - (py[1] - py[0]) * (px[2] - px[0]);
+	
+	// find player to door vectors
+	float vx = px[0] - (float)_me.xloc;
+	float vy = py[0] - (float)_me.yloc;
+	float vz = pz[0] - 0.0f; 
+	
+	// dot product
+	return (nx * vx + ny * vy + nz * vz) < 0.0f;
+}
 void ColonyEngine::battleDrawTanks() {
 	_insight = false;
 
@@ -811,12 +841,14 @@ void ColonyEngine::battleDrawTanks() {
 			// Draw door with depth test disabled so it renders fully
 			// on top of the coplanar entrance wall (same fill color,
 			// but the black outline becomes clearly visible).
-			_gfx->setDepthState(true, false);
-			_gfx->setDepthRange(0.0f, 0.999f);
-			draw3DBattlePrism(kEntDoorDef, _battleEnter.xloc, _battleEnter.yloc,
-				_battleEnter.ang, -kFloor);
-			_gfx->setDepthRange(0.0f, 1.0f);
-			_gfx->setDepthState(true, true);
+			if (isDoorVisible(kEntDoorDef, _battleEnter)) {
+				_gfx->setDepthState(true, false);
+				_gfx->setDepthRange(0.0f, 0.999f);
+				draw3DBattlePrism(kEntDoorDef, _battleEnter.xloc, _battleEnter.yloc,
+					_battleEnter.ang, -kFloor);
+				_gfx->setDepthRange(0.0f, 1.0f);
+				_gfx->setDepthState(true, true);
+			}
 			if (_battleMaxP < 100) {
 				_battlePwh[_battleMaxP] = &_battleEnter;
 				_battleMaxP++;
@@ -866,12 +898,13 @@ void ColonyEngine::battleDrawTanks() {
 				_battleShip.ang, -kFloor);
 			draw3DBattlePrism(kFRightDef, _battleShip.xloc, _battleShip.yloc,
 				_battleShip.ang, -kFloor);
-			_gfx->setDepthState(true, false);
-			_gfx->setDepthRange(0.0f, 0.999f);
-			draw3DBattlePrism(kSDoorDef, _battleShip.xloc, _battleShip.yloc,
-				_battleShip.ang, -kFloor);
-			_gfx->setDepthRange(0.0f, 1.0f);
-			_gfx->setDepthState(true, true);
+			if (isDoorVisible(kSDoorDef, _battleShip)) {
+				_gfx->setDepthState(true, false);
+				_gfx->setDepthRange(0.0f, 0.999f);
+				draw3DBattlePrism(kSDoorDef, _battleShip.xloc, _battleShip.yloc, _battleShip.ang, -kFloor);
+				_gfx->setDepthRange(0.0f, 1.0f);
+				_gfx->setDepthState(true, true);
+			}
 			if (_battleMaxP < 100) {
 				_battlePwh[_battleMaxP] = &_battleShip;
 				_battleMaxP++;
