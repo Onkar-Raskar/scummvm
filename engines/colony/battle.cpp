@@ -959,18 +959,20 @@ void ColonyEngine::battleThink() {
 		const int fy = _bfight[i].yloc + (_sint[objWorldAng(ang)] >> 2);
 		const int shipHalfWidth = 350;
 		const int shipHalfLength = 900;
+		const int droneRadius = 170;
+		const int enterClearance = 2 * kBattleSize + droneRadius;
 
 		if (distance > 250 || tooFar) {
 			if ((!_orbit) &&
-				fx > _battleShip.xloc - shipHalfWidth &&
-				fx < _battleShip.xloc + shipHalfWidth &&
-				fy > _battleShip.yloc - shipHalfLength &&
-				fy < _battleShip.yloc + shipHalfLength) {
+				fx > _battleShip.xloc - (shipHalfWidth + droneRadius) &&
+				fx < _battleShip.xloc + (shipHalfWidth + droneRadius) &&
+				fy > _battleShip.yloc - (shipHalfLength + droneRadius) &&
+				fy < _battleShip.yloc + (shipHalfLength + droneRadius)) {
 				ang += 8;
-			} else if (fx > _battleEnter.xloc - 2 * kBattleSize &&
-				fx < _battleEnter.xloc + 2 * kBattleSize &&
-				fy > _battleEnter.yloc - 2 * kBattleSize &&
-				fy < _battleEnter.yloc + 2 * kBattleSize) {
+			} else if (fx > _battleEnter.xloc - enterClearance &&
+				fx < _battleEnter.xloc + enterClearance &&
+				fy > _battleEnter.yloc - enterClearance &&
+				fy < _battleEnter.yloc + enterClearance) {
 				ang += 8;
 			} else {
 				_bfight[i].xloc = battleNormalizeCoord(fx);
